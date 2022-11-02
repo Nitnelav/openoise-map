@@ -30,15 +30,17 @@ from qgis.PyQt.QtGui import QIcon
 from . import resources
 # Import the code for the dialog
 import os,shutil, sys
+from pathlib import Path
+from difflib import SequenceMatcher
 
 # Set up current path, so that we know where to look for mudules
 currentPath = os.path.dirname(__file__)
 #sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/tools'))
 #sys.path.append(os.path.abspath(os.path.dirname(__file__) ))
 #import do_CreateReceiverPoints,do_CalculateNoiseLevels,do_AssignLevelsToBuildings,do_ApplyNoiseSymbology#,do_Credits
-
+    
 from .tools import do_Informations,do_CreateReceiverPoints,do_CalculateNoiseLevels,\
-    do_AssignNoiseExposure,do_ApplyNoiseSymbology,do_Help, do_CreateGrid
+    do_AssignNoiseExposure,do_ApplyNoiseSymbology,do_Help, do_CreateGrid, lib_NoiseModelling
 
 class opeNoise(object):
 

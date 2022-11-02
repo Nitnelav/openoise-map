@@ -22,6 +22,18 @@
  ***************************************************************************/
 """
 from __future__ import absolute_import
+import os, site, sys
+
+if site.USER_SITE not in sys.path:
+    sys.path.append(site.USER_SITE)
+
+from .utils import ensure_pyjnius, ensure_jdk, ensure_noisemodelling
+if not ensure_jdk():
+    raise Exception("Plugin initialisation failed because the java jdk could not be properly installed")
+if not ensure_noisemodelling():
+    raise Exception("Plugin initialisation failed because the noisemodelling libs could not be properly installed")
+if not ensure_pyjnius():
+    raise Exception("Plugin initialisation failed because the pyjnius dependency could not be installed")
 
 def classFactory(iface):
     # load opeNoise class from file opeNoise

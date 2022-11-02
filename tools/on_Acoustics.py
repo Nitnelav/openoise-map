@@ -725,10 +725,12 @@ class CNOSSOS(object):
         self.input_dict = input_dict
 
     def bands(self):
-        return on_Acoustics_CNOSSOS.CNOSSOS(self.input_dict).bands()
+        # return on_Acoustics_CNOSSOS.CNOSSOS(self.input_dict).bands()
+        return on_Acoustics_CNOSSOS.CNOSSOS_NoiseModelling(self.input_dict).bands()
 
     def overall(self):
-        return on_Acoustics_CNOSSOS.CNOSSOS(self.input_dict).bands().overall()
+        # return on_Acoustics_CNOSSOS.CNOSSOS(self.input_dict).bands().overall()
+        return on_Acoustics_CNOSSOS.CNOSSOS_NoiseModelling(self.input_dict).bands().overall()
 
 
 class NMPB(object):

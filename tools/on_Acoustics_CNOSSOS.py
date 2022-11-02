@@ -29,6 +29,66 @@ import numpy
 import os
 import xml.etree.ElementTree as ET
 
+from .lib_NoiseModelling import RoadSourceParametersCnossos, EvaluateRoadSourceCnossos
+
+class CNOSSOS_NoiseModelling(object):
+    """ Arguments:
+
+    """
+    def __init__(self, input_dict):
+
+        self.input_dict = input_dict
+
+
+    def bands(self):
+        
+        vehicle_categories_params = ['1_n','1_s','2_n','2_s','3_n','3_s','4a_n','4a_s','4b_n','4b_s']
+        for param in vehicle_categories_params:
+            if param not in self.input_dict:
+                self.input_dict[param] = 0
+
+        lv_speed = self.input_dict['1_n']
+        lv_per_hour = self.input_dict['1_s']
+        mv_speed = self.input_dict['2_n']
+        mv_per_hour = self.input_dict['2_s']
+        hgv_speed = self.input_dict['3_n']
+        hgv_per_hour = self.input_dict['3_s']
+        wav_speed = self.input_dict['4a_n']
+        wav_per_hour = self.input_dict['4a_s']
+        wbv_speed = self.input_dict['4b_n']
+        wbv_per_hour = self.input_dict['4b_s']
+        Temperature =self. input_dict['temperature']
+        RoadSurface = self.input_dict['surface'].upper()
+        Pm_stud = self.input_dict['1_qstudd']
+        Ts_stud = self.input_dict['Ts']
+        Junc_dist = self.input_dict['dist_intersection']
+        Junc_type = 2 if self.input_dict['k'] == 'k=2' else 1
+        
+        bands = [63, 125, 250, 500, 1000 , 2000, 4000, 8000]
+        results = []
+        for freq in bands:
+
+            rsParameters = RoadSourceParametersCnossos(lv_speed, mv_speed, hgv_speed, wav_speed, wbv_speed, lv_per_hour,
+                                                    mv_per_hour, hgv_per_hour, wav_per_hour, wbv_per_hour, freq,
+                                                    Temperature, RoadSurface, Ts_stud, Pm_stud, Junc_dist, Junc_type)
+            rsParameters.setSlopePercentage_without_limit(10)
+            rsParameters.setCoeffVer(1)
+            results.append(EvaluateRoadSourceCnossos.evaluate(rsParameters))
+        
+        return results
+
+
+    def overall(self):
+
+        p = self.bands()
+
+        p_overall = 0
+
+        for f in list(p.keys()):
+            if p[f] > 0:
+                p_overall = round(10*log10(numpy.power(10,p_overall/10.) + numpy.power(10,p[f]/10.)),1)
+
+        return p_overall
 
 class CNOSSOS(object):
     """ Arguments:
